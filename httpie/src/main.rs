@@ -68,23 +68,6 @@ fn parse_kv_pair(s: &str) -> Result<KvPair> {
     Ok(s.parse()?)
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let opts = Opts::parse();
-    let mut headers = header::HeaderMap::new();
-    headers.insert("X-POWERED-BY", "Rust".parse()?);
-    headers.insert(header::USER_AGENT, "Rust Httpie".parse()?);
-    // 生成一个 http 客户端
-    let client = reqwest::Client::builder()
-        .default_headers(headers)
-        .build()?;
-    let result = match opts.subcmd {
-        Subcmd::Get(ref args) => get(client, args).await?,
-        Subcmd::Post(ref args) => post(client, args).await?,
-    };
-    Ok(result)
-}
-
 async fn get(client: Client, args: &Get) -> Result<()> {
     let resp = client.get(&args.url).send().await?;
     Ok(print_resp(resp).await?)
@@ -155,6 +138,23 @@ fn get_content_type(resp: &Response) -> Option<Mime> {
     resp.headers()
         .get(header::CONTENT_TYPE)
         .map(|v| v.to_str().unwrap().parse().unwrap())
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let opts = Opts::parse();
+    let mut headers = header::HeaderMap::new();
+    headers.insert("X-POWERED-BY", "Rust".parse()?);
+    headers.insert(header::USER_AGENT, "Rust Httpie".parse()?);
+    // 生成一个 http 客户端
+    let client = reqwest::Client::builder()
+        .default_headers(headers)
+        .build()?;
+    let result = match opts.subcmd {
+        Subcmd::Get(ref args) => get(client, args).await?,
+        Subcmd::Post(ref args) => post(client, args).await?,
+    };
+    Ok(result)
 }
 
 // test
