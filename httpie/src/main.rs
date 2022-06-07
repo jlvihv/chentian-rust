@@ -11,8 +11,9 @@ use syntect::{
     util::{as_24_bit_terminal_escaped, LinesWithEndings},
 };
 
+/// A naive httpie implementation with Rust
 #[derive(Debug, Parser)]
-#[clap(version = "0.1.0", author = "vihv")]
+#[clap(version = "0.1.0", author = "jlvihv <vihv@qq.com>")]
 struct Opts {
     #[clap(subcommand)]
     subcmd: Subcmd,
